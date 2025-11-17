@@ -68,8 +68,14 @@ namespace program
 		UpdateCamera(&camera, CAMERA_FREE);
 		frustum.update(camera);
 
+		float fovAddSpeed = 20;
+
 		if (IsKeyPressed(KEY_TAB))
 			firstPerson = !firstPerson;
+		if (IsKeyDown(KEY_TWO))
+			camera.fovy = fmaxf(camera.fovy - fovAddSpeed * delta, 15);
+		if (IsKeyDown(KEY_ONE))
+			camera.fovy = fminf(camera.fovy + fovAddSpeed * delta, 180);
 	}
 
 	static void draw()
@@ -84,7 +90,11 @@ namespace program
 			BeginMode3D(camera2);
 
 		for (int i = 0; i < maxFigures; i++)
-			figures[i].render();
+		{
+			if (frustum.isInside(figures[i].getAABB()))
+				figures[i].render();
+		}
+
 
 		if (!firstPerson)
 			frustum.draw();

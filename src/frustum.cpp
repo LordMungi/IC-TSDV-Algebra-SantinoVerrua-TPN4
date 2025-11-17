@@ -1,6 +1,7 @@
-#include "frustum.h"
+﻿#include "frustum.h"
 
 #include <raymath.h>
+#include <iostream>
 
 Frustum::Frustum(Camera camera)
 {
@@ -10,21 +11,21 @@ Frustum::Frustum(Camera camera)
 void Frustum::update(Camera camera)
 {
 	Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
-	Vector3 right = Vector3Normalize(Vector3CrossProduct(camera.up, forward));
-	Vector3 up = Vector3Normalize(Vector3CrossProduct(forward, right));
+	Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, camera.up));
+	Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
 	float fov = camera.fovy * DEG2RAD;
 
 	float nearDistance = 1;
-	float farDistance = 20;
+	float farDistance = 100;
 
 	Vector3 farCenter = Vector3Add(camera.position, Vector3Scale(forward, farDistance));
 	Vector3 nearCenter = Vector3Add(camera.position, Vector3Scale(forward, nearDistance));
 
-	float farHalfHeight = tan(fov / 2) * farDistance;
-	float farHalfWidth = farHalfHeight * 4 / 3;
+	float farHalfHeight = static_cast<float>(tan(fov / 2) * farDistance);
+	float farHalfWidth = static_cast<float>(farHalfHeight * 4/3);
 
-	float nearHalfHeight = tan(fov / 2) * nearDistance;
-	float nearHalfWidth = nearHalfHeight * 4 / 3;
+	float nearHalfHeight = static_cast<float>(tan(fov / 2) * nearDistance);
+	float nearHalfWidth = static_cast<float>(nearHalfHeight * 4/3);
 
 	farTopLeft = Vector3Add(farCenter, Vector3Add(Vector3Scale(right, -farHalfWidth), Vector3Scale(up, farHalfHeight)));
 	farTopRight = Vector3Add(farCenter, Vector3Add(Vector3Scale(right, farHalfWidth), Vector3Scale(up, farHalfHeight)));
@@ -36,24 +37,52 @@ void Frustum::update(Camera camera)
 	nearBottomLeft = Vector3Add(nearCenter, Vector3Add(Vector3Scale(right, -nearHalfWidth), Vector3Scale(up, -nearHalfHeight)));
 	nearBottomRight = Vector3Add(nearCenter, Vector3Add(Vector3Scale(right, nearHalfWidth), Vector3Scale(up, -nearHalfHeight)));
 
-	farPlane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(farTopLeft, farTopRight), Vector3Subtract(farBottomLeft, farTopRight)));
-	farPlane.distance = -Vector3DotProduct(farTopLeft, farPlane.normal);
-	
-	nearPlane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(nearTopRight, nearTopLeft), Vector3Subtract(nearBottomRight, nearTopLeft)));
-	nearPlane.distance = -Vector3DotProduct(nearTopLeft, nearPlane.normal);
-	
-	rightPlane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(farTopRight, nearTopRight), Vector3Subtract(farBottomRight, nearTopRight)));
-	rightPlane.distance = -Vector3DotProduct(farTopRight, rightPlane.normal);
-	
-	leftPlane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(farBottomLeft, nearTopLeft), Vector3Subtract(farTopLeft, nearTopLeft)));
-	leftPlane.distance = -Vector3DotProduct(farTopLeft, leftPlane.normal);
+	center = Vector3Scale(Vector3Add(farCenter, nearCenter), 0.5f);
 
-	topPlane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(nearTopRight, nearTopLeft), Vector3Subtract(farTopRight, nearTopLeft)));
-	topPlane.distance = -Vector3DotProduct(farTopLeft, topPlane.normal);
+	farPlane = buildPlane(farTopRight, farTopLeft, farBottomRight);
+	nearPlane = buildPlane(nearTopRight, nearTopLeft, nearBottomRight);
+	rightPlane = buildPlane(nearTopRight, farTopRight, farBottomRight);
+	leftPlane = buildPlane(nearTopLeft, farBottomLeft, farTopLeft);
+	topPlane = buildPlane(nearTopLeft, nearTopRight, farTopRight);
+	bottomPlane = buildPlane(nearBottomRight, nearBottomLeft, farBottomLeft);
+}
 
-	bottomPlane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(nearBottomLeft, nearBottomRight), Vector3Subtract(farBottomLeft, nearBottomRight)));
-	bottomPlane.distance = -Vector3DotProduct(farBottomLeft, bottomPlane.normal);
+Plane Frustum::buildPlane(Vector3 p1, Vector3 p2, Vector3 p3)
+{
+	Plane plane;
+	plane.normal = Vector3Normalize(Vector3CrossProduct(Vector3Subtract(p2, p1), Vector3Subtract(p3, p1)));
+	if (Vector3DotProduct(plane.normal, Vector3Subtract(center, p1)) < 0)
+		plane.normal = Vector3Negate(plane.normal);
+	plane.distance = -Vector3DotProduct(p1, plane.normal);
+	return plane;
+}
 
+bool Frustum::isAABBinPlane(AABB aabb, Plane plane)
+{
+	Vector3 point;
+	if (plane.normal.x > 0)
+		point.x = aabb.getMax().x;
+	else
+		point.x = aabb.getMin().x;
+
+	if (plane.normal.y > 0)
+		point.y = aabb.getMax().y;
+	else
+		point.y = aabb.getMin().y;
+
+	if (plane.normal.z > 0)
+		point.z = aabb.getMax().z;
+	else
+		point.z = aabb.getMin().z;
+
+	return Vector3DotProduct(plane.normal, point) + plane.distance >= 0;
+}
+
+bool Frustum::isInside(AABB aabb)
+{
+	return (isAABBinPlane(aabb, farPlane) && isAABBinPlane(aabb, nearPlane) &&
+		isAABBinPlane(aabb, rightPlane) && isAABBinPlane(aabb, leftPlane) &&
+		isAABBinPlane(aabb, topPlane) && isAABBinPlane(aabb, bottomPlane));
 }
 
 void Frustum::draw()

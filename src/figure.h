@@ -30,5 +30,7 @@ public:
 	inline Vector3 getAABBMin() { return aabb.getMin(); };
 	inline Vector3 getAABBMax() { return aabb.getMax(); };
 
+	inline AABB getAABB() { return aabb; };
+
 	void render();
 };
