@@ -7,7 +7,6 @@ Figure::Figure()
 	size = { 1,1,1 };
 	color = RED;
 
-	isSelected = false;
 }
 
 Figure::Figure(Model model)
@@ -23,7 +22,6 @@ Figure::Figure(Model model)
 	aabb.setAABB(model.meshes[0]);
 	aabb.update(model.transform);
 
-	isSelected = false;
 }
 
 Figure::Figure(Model model, Vector3 position, Color color)
@@ -39,7 +37,6 @@ Figure::Figure(Model model, Vector3 position, Color color)
 	aabb.setAABB(model.meshes[0]);
 	aabb.update(model.transform);
 
-	isSelected = false;
 	applyTransform();
 }
 
@@ -76,11 +73,6 @@ void Figure::applyTransform()
 
 void Figure::render()
 {
-	/*
-	if (isSelected)
-		DrawModel(model, { 0,0,0 }, 1.0f, RED);
-	else
-		DrawModel(model, { 0,0,0 }, 1.0f, LIGHTGRAY);
+	DrawModel(model, { 0,0,0 }, 1.0f, color);
 	aabb.render();
-	*/
 }

@@ -16,8 +16,6 @@ private:
 
 	Color color;
 
-	bool isSelected;
-
 	void applyTransform();
 	void getLocalCenter();
 

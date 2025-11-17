@@ -1,5 +1,6 @@
+#include "program.h"
 
-int main()
+void main()
 {
-	return 0;
+	program::run();
 }

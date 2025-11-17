@@ -62,5 +62,5 @@ bool AABB::isColliding(AABB other)
 
 void AABB::render()
 {
-	//DrawCubeWires(Vector3Scale(Vector3Add(min, max), 0.5f), max.x - min.x, max.y - min.y, max.z - min.z, GRAY);
+	DrawCubeWires(Vector3Scale(Vector3Add(min, max), 0.5f), max.x - min.x, max.y - min.y, max.z - min.z, GRAY);
 }
