@@ -10,6 +10,12 @@
     <Filter Include="Program\Figure\AABB">
       <UniqueIdentifier>{a6fbb679-509d-4c50-b71c-7aa1881bc7cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Program\Frustum">
+      <UniqueIdentifier>{485918c3-90fe-465d-a728-f49b487468a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Program\Plane">
+      <UniqueIdentifier>{17b192c0-55e1-4ca7-b05d-6cb0249a67d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\aabb.cpp">
@@ -24,6 +30,9 @@
     <ClCompile Include="src\program.cpp">
       <Filter>Program</Filter>
     </ClCompile>
+    <ClCompile Include="src\frustum.cpp">
+      <Filter>Program\Frustum</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\aabb.h">
@@ -34,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="src\program.h">
       <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="src\frustum.h">
+      <Filter>Program\Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="src\plane.h">
+      <Filter>Program\Plane</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

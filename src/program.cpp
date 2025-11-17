@@ -1,6 +1,7 @@
 #include "program.h"
 
 #include "figure.h"
+#include "frustum.h"
 
 namespace program
 {
@@ -11,6 +12,8 @@ namespace program
 
 	Camera3D camera;
 	Camera3D camera2;
+
+	Frustum frustum;
 
 	bool firstPerson;
 	const int maxFigures = 6;
@@ -36,8 +39,10 @@ namespace program
 		camera.position = { 0, 5, 7 };
 		camera.target = { 0, 0, 0 };
 		camera.up = { 0, 1, 0 };
-		camera.fovy = 45.0f;
+		camera.fovy = 30.0f;
 		camera.projection = CAMERA_PERSPECTIVE;
+
+		frustum = Frustum(camera);
 
 		camera2.position = { 0, 10, 10 };
 		camera2.target = { 0, 0, 0 };
@@ -61,6 +66,7 @@ namespace program
 		float delta = GetFrameTime();
 
 		UpdateCamera(&camera, CAMERA_FREE);
+		frustum.update(camera);
 
 		if (IsKeyPressed(KEY_TAB))
 			firstPerson = !firstPerson;
@@ -80,7 +86,8 @@ namespace program
 		for (int i = 0; i < maxFigures; i++)
 			figures[i].render();
 
-		DrawLine3D(camera.position, camera.target, RED);
+		if (!firstPerson)
+			frustum.draw();
 
 		DrawGrid(10, 1);
 

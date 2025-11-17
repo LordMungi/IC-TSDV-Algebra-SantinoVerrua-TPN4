@@ -153,12 +153,15 @@
   <ItemGroup>
     <ClCompile Include="src\aabb.cpp" />
     <ClCompile Include="src\figure.cpp" />
+    <ClCompile Include="src\frustum.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\program.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\aabb.h" />
     <ClInclude Include="src\figure.h" />
+    <ClInclude Include="src\frustum.h" />
+    <ClInclude Include="src\plane.h" />
     <ClInclude Include="src\program.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
