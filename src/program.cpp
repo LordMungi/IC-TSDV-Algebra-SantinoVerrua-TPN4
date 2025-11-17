@@ -103,6 +103,36 @@ namespace program
 
 		EndMode3D();
 
+		float fontSize = 20;
+		float separation = 5;
+		Vector2 position = { 20, 30 };
+		float posX2 = 100;
+
+		if (firstPerson)
+			DrawText("CAMERA 1", position.x, position.y, fontSize, MAGENTA);
+		else
+			DrawText("CAMERA 2", position.x, position.y, fontSize, BLUE);
+
+		position.y += fontSize + separation * 2;
+
+		Color textColor = DARKGRAY;
+		Color textColor2 = GRAY;
+
+		DrawText("Controls:", position.x, position.y, fontSize, BLACK);
+		position.y += fontSize + separation;
+		DrawText("WASD", position.x, position.y, fontSize, textColor);
+		DrawText("Move", posX2, position.y, fontSize, textColor2);
+		position.y += fontSize + separation;
+		DrawText("Q/E", position.x, position.y, fontSize, textColor);
+		DrawText("Tilt", posX2, position.y, fontSize, textColor2);
+		position.y += fontSize + separation;
+		DrawText("1/2", position.x, position.y, fontSize, textColor);
+		DrawText("Change FOV", posX2, position.y, fontSize, textColor2);
+		position.y += fontSize + separation;
+		DrawText("TAB", position.x, position.y, fontSize, textColor);
+		DrawText("Change camera", posX2, position.y, fontSize, textColor2);
+
+
 		EndDrawing();
 	}
 
