@@ -85,9 +85,16 @@ bool Frustum::isPointInPlane(Vector3 point, Plane plane)
 
 bool Frustum::isInside(AABB aabb)
 {
-	return (isAABBinPlane(aabb, farPlane) && isAABBinPlane(aabb, nearPlane) &&
-		isAABBinPlane(aabb, rightPlane) && isAABBinPlane(aabb, leftPlane) &&
-		isAABBinPlane(aabb, topPlane) && isAABBinPlane(aabb, bottomPlane));
+	for (int i = 0; i < 8; i++)
+	{
+		if (isPointInPlane(aabb.getPoint(i), farPlane) && isPointInPlane(aabb.getPoint(i), nearPlane) &&
+			isPointInPlane(aabb.getPoint(i), rightPlane) && isPointInPlane(aabb.getPoint(i), leftPlane) &&
+			isPointInPlane(aabb.getPoint(i), topPlane) && isPointInPlane(aabb.getPoint(i), bottomPlane))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool Frustum::isInside(Mesh mesh)

@@ -4,8 +4,6 @@ AABB::AABB()
 {
 	localMin = { 0,0,0 };
 	localMax = { 0,0,0 };
-	min = { 0,0,0 };
-	max = { 0,0,0 };
 }
 
 void AABB::calculateSize(Mesh mesh)
@@ -35,16 +33,7 @@ void AABB::update(Matrix transform)
 	};
 
 	for (int i = 0; i < 8; i++)
-		corners[i] = Vector3Transform(corners[i], transform);
-
-	min = corners[0];
-	max = corners[0];
-
-	for (int i = 0; i < 8; i++)
-	{
-		min = Vector3Min(min, corners[i]);
-		max = Vector3Max(max, corners[i]);
-	}
+		points[i] = Vector3Transform(corners[i], transform);
 }
 
 void AABB::setAABB(Mesh mesh)
@@ -62,5 +51,16 @@ bool AABB::isColliding(AABB other)
 
 void AABB::render()
 {
-	DrawCubeWires(Vector3Scale(Vector3Add(min, max), 0.5f), max.x - min.x, max.y - min.y, max.z - min.z, GRAY);
+	DrawLine3D(points[0], points[1], RED);
+	DrawLine3D(points[0], points[2], RED);
+	DrawLine3D(points[0], points[3], RED);
+	DrawLine3D(points[2], points[5], RED);
+	DrawLine3D(points[5], points[3], RED);
+	DrawLine3D(points[3], points[6], RED);
+	DrawLine3D(points[4], points[5], RED);
+	DrawLine3D(points[4], points[6], RED);
+	DrawLine3D(points[4], points[7], RED);
+	DrawLine3D(points[6], points[1], RED);
+	DrawLine3D(points[1], points[7], RED);
+	DrawLine3D(points[7], points[2], RED);
 }

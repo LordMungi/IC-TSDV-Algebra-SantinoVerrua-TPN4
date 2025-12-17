@@ -12,7 +12,10 @@ private:
 	Vector3 min;
 	Vector3 max;
 
+	Vector3 points[8] = {};
+
 	void calculateSize(Mesh mesh);
+	void applyTransform(Matrix transform);
 public:
 
 	AABB();
@@ -24,6 +27,7 @@ public:
 
 	inline Vector3 getMin() { return min; };
 	inline Vector3 getMax() { return max; };
+	inline Vector3 getPoint(int i) { return points[i]; };
 
 	void render();
 };
