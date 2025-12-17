@@ -28,6 +28,7 @@ private:
 	Plane bottomPlane;
 
 	bool isAABBinPlane(AABB aabb, Plane plane);
+	bool isPointInPlane(Vector3 point, Plane plane);
 	Plane buildPlane(Vector3 p1, Vector3 p2, Vector3 p3);
 
 public:
@@ -37,6 +38,7 @@ public:
 
 	void update(Camera camera);
 	bool isInside(AABB aabb);
+	bool isInside(Mesh mesh);
 
 	void draw();
 };

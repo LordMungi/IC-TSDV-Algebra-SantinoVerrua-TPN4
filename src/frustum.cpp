@@ -78,12 +78,34 @@ bool Frustum::isAABBinPlane(AABB aabb, Plane plane)
 	return Vector3DotProduct(plane.normal, point) + plane.distance >= 0;
 }
 
+bool Frustum::isPointInPlane(Vector3 point, Plane plane)
+{
+	return Vector3DotProduct(plane.normal, point) + plane.distance >= 0;
+}
+
 bool Frustum::isInside(AABB aabb)
 {
 	return (isAABBinPlane(aabb, farPlane) && isAABBinPlane(aabb, nearPlane) &&
 		isAABBinPlane(aabb, rightPlane) && isAABBinPlane(aabb, leftPlane) &&
 		isAABBinPlane(aabb, topPlane) && isAABBinPlane(aabb, bottomPlane));
 }
+
+bool Frustum::isInside(Mesh mesh)
+{
+	for (int i = 0; i < mesh.vertexCount; i += 3)
+	{
+		Vector3 vertex = { mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2] };
+
+		if (isPointInPlane(vertex, farPlane) && isPointInPlane(vertex, nearPlane) &&
+			isPointInPlane(vertex, rightPlane) && isPointInPlane(vertex, leftPlane) &&
+			isPointInPlane(vertex, topPlane) && isPointInPlane(vertex, bottomPlane))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void Frustum::draw()
 {

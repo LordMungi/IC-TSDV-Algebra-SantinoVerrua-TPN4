@@ -20,6 +20,7 @@ namespace program
 
 	Figure figures[maxFigures];
 	Figure figure;
+	Figure* selectedFigure = &figures[0];
 
 	void run()
 	{
@@ -57,6 +58,8 @@ namespace program
 		figures[4] = Figure(LoadModel("resource/octahedron.obj"), { -2, 0, -2 }, MAGENTA);
 		figures[5] = Figure(LoadModel("resource/tetrahedron.obj"), { 0, 2, 0 }, BLACK);
 
+		selectedFigure->setSelected(true);
+
 		firstPerson = true;
 		DisableCursor();
 	}
@@ -65,10 +68,32 @@ namespace program
 	{
 		float delta = GetFrameTime();
 
-		UpdateCamera(&camera, CAMERA_FREE);
 		frustum.update(camera);
 
 		float fovAddSpeed = 20;
+
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			if (IsKeyDown(KEY_W))
+				selectedFigure->rotate({ -1,0,0 }, delta);
+			if (IsKeyDown(KEY_A))
+				selectedFigure->rotate({ 0,0,1 }, delta);
+			if (IsKeyDown(KEY_S))
+				selectedFigure->rotate({ 1,0,0 }, delta);
+			if (IsKeyDown(KEY_D))
+				selectedFigure->rotate({ 0,0,-1 }, delta);
+			if (IsKeyPressed(KEY_SPACE))
+			{
+				selectedFigure->setSelected(false);
+				selectedFigure = selectedFigure++;
+				if (selectedFigure == &figures[maxFigures])
+					selectedFigure = &figures[0];
+				selectedFigure->setSelected(true);
+			}
+		}
+		else
+			UpdateCamera(&camera, CAMERA_FREE);
+
 
 		if (IsKeyPressed(KEY_TAB))
 			firstPerson = !firstPerson;
@@ -76,6 +101,8 @@ namespace program
 			camera.fovy = fmaxf(camera.fovy - fovAddSpeed * delta, 15);
 		if (IsKeyDown(KEY_ONE))
 			camera.fovy = fminf(camera.fovy + fovAddSpeed * delta, 180);
+
+
 	}
 
 	static void draw()
@@ -92,7 +119,10 @@ namespace program
 		for (int i = 0; i < maxFigures; i++)
 		{
 			if (frustum.isInside(figures[i].getAABB()))
-				figures[i].render();
+			{
+				if (frustum.isInside(figures[i].getModel().meshes[0]))
+					figures[i].render();
+			}
 		}
 
 

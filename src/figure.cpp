@@ -6,6 +6,7 @@ Figure::Figure()
 	rotation = { 0,0,0 };
 	size = { 1,1,1 };
 	color = RED;
+	isSelected = false;
 
 }
 
@@ -21,7 +22,7 @@ Figure::Figure(Model model)
 	getLocalCenter();
 	aabb.setAABB(model.meshes[0]);
 	aabb.update(model.transform);
-
+	isSelected = false;
 }
 
 Figure::Figure(Model model, Vector3 position, Color color)
@@ -36,6 +37,7 @@ Figure::Figure(Model model, Vector3 position, Color color)
 	getLocalCenter();
 	aabb.setAABB(model.meshes[0]);
 	aabb.update(model.transform);
+	isSelected = false;
 
 	applyTransform();
 }
@@ -52,6 +54,17 @@ void Figure::getLocalCenter()
 	}
 
 	center = Vector3Scale(Vector3Add(max, min), 0.5f);
+}
+
+void Figure::rotate(Vector3 angle, float delta)
+{
+	float speed = 40;
+
+	rotation.x += angle.x * delta * speed;
+	rotation.y += angle.y * delta * speed;
+	rotation.z += angle.z * delta * speed;
+
+	applyTransform();
 }
 
 void Figure::applyTransform()
@@ -73,6 +86,9 @@ void Figure::applyTransform()
 
 void Figure::render()
 {
-	DrawModel(model, { 0,0,0 }, 1.0f, color);
+	if (isSelected)
+		DrawModel(model, { 0,0,0 }, 1.0f, color);
+	else
+		DrawModel(model, { 0,0,0 }, 1.0f, GRAY);
 	aabb.render();
 }
